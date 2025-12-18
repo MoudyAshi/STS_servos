@@ -204,6 +204,8 @@ int STSServoDriver::sendMessage(byte const &servoId,
         digitalWrite(dirPin_, HIGH);
     }
     int ret = port_->write(message, 6 + paramLength);
+    port_->flush();
+    delayMicroseconds(20);
     if (this->dirPin_ < 255){
         digitalWrite(dirPin_, LOW);
     }
@@ -252,7 +254,7 @@ byte STSServoDriver::readRegister(byte const &servoId, byte const &registerId)
     byte result = 0;
     int rc = readRegisters(servoId, registerId, 1, &result);
     if (rc < 0)
-        return 0;
+        return 255;
     return result;
 }
 
