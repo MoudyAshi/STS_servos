@@ -384,6 +384,9 @@ void STSServoDriver::setTargetPositions(byte const &numberOfServos, const byte s
                                         const int positions[],
                                         const int speeds[])
 {
+    if (this->dirPin_ < 255) {
+        digitalWrite(dirPin_, HIGH);
+    }
     port_->write(0xFF);
     port_->write(0xFF);
     port_->write(0XFE);
@@ -405,6 +408,11 @@ void STSServoDriver::setTargetPositions(byte const &numberOfServos, const byte s
         sendAndUpdateChecksum(intAsByte, checksum);
     }
     port_->write(~checksum);
+    port_->flush();
+    delayMicroseconds(20);
+    if (this->dirPin_ < 255) {
+        digitalWrite(dirPin_, LOW);
+    }
 }
 
 void STSServoDriver::determineServoType(byte const& servoId)
